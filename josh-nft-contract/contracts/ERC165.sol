@@ -6,7 +6,7 @@ import "./IERC165.sol";
 
 contract ERC165 is IERC165 {
 
-    /// @notice this contract interfaceId
+    /// @notice ERC165 interfaceId
     bytes4 private constant _INTERFACE_ID_ERC165 = 0x01ffc9a7;
 
     /// @notice map supported function signatures to bool signifying if they're supported or not
