@@ -5,13 +5,14 @@ pragma solidity ^0.8.0;
 import "./IERC721.sol";
 import "./Address.sol";
 import "./ERC165.sol";
+import "./IERC721Receiver.sol";
 
 /**
  * @title JOSH NFT [A contract for Josh NFT collections]
  * @author Bytangle
  * @dev this is an experimental implementation of an NFT collections contract
  */
-contract JoshNFT is IERC721, ERC165 {
+contract JoshNFT is IERC721, ERC165, IERC721Receiver {
     using Address for address;
 
     /// @notice Can also get this by calling `IERC721Receiver(0).onERC721Received.selector`
@@ -136,14 +137,18 @@ contract JoshNFT is IERC721, ERC165 {
 
     function safeTransfer(address _from, address _to, uint256 _tokenId, bytes memory _data) 
         public notZeroAddr(_from) notZeroAddr(_to) payable {
+            transferFrom(_from, _to, _tokenId);
 
-            
-    } 
+            require(_performSafeTransfer(_from, _to, _tokenId, _data));
+    }
 
     function transferFrom(address _from, address _to, uint256 _tokenId) public payable 
         isOwnerOrApproved(_from, _tokenId) notZeroAddr(_to) {
-            _clearApprovals(_from, _tokenId);
+            _clearApprovals(_from, _tokenId); // clear approvals
+            _removeTokenFrom(_from, _tokenId); // clear ownership
+            _addTokenTo(_to, _tokenId); // update ownership
 
+            Transfer(_from, _to, _tokenId);
     }
 
     /**
@@ -167,7 +172,37 @@ contract JoshNFT is IERC721, ERC165 {
     function _removeTokenFrom(address _owner, uint256 _tokenId) private isTokenOwner(_owner, _tokenId) {
         if(tokenOwners_[_tokenId] != address(0)) {
             delete tokenOwners_[_tokenId]; // reset to address(0)
+            _ownedTokensCount[_owner] -= 1; // decrease number of tokens owned by owner
         }
+    }
+
+    /**
+     * @dev update NFT ownership
+     * @param _to new owner's address
+     * @param _tokenId NFT token identifier
+     */
+    function _addTokenTo(address _to, uint256 _tokenId) private notZeroAddr(_to) {
+        require(tokenOwners_[_tokenId] == address(0));
+        tokenOwners_[_tokenId] = _to;
+        _ownedTokensCount[_to] += 1; // this is checked which means it throws when it overflows or underflows
+    }
+
+    /**
+     * @notice check if `_to` is a contract and call appropriate callback function
+     * @param _from initial NFT owner
+     * @param _to new owner
+     * @param _tokenId NFT token identifier
+     * @param _data optional extra data
+     */
+
+    function _performSafeTransfer(address _from, address _to, uint256 _tokenId, bytes memory _data) private returns (bool) {
+        if(_to.isAContract()) {
+            bytes4 receipt = IERC721Receiver(_to).onERC721Received(msg.sender, _from, _tokenId, _data);
+
+            return (receipt == _ERC721_RECEIVED); 
+        }
+
+        return true;
     }
 
     /**
