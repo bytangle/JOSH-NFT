@@ -1,0 +1,206 @@
+{
+  "contractName": "IERC165",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "_interfaceID",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.16+commit.07a7930e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"_interfaceID\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"supportsInterface(bytes4)\":{\"details\":\"Interface identification is specified in ERC-165. This function uses less than 30,000 gas.\",\"params\":{\"_interfaceID\":\"Interface identifier as specified in ERC-165\"},\"returns\":{\"_0\":\"`true` if the contract implements `_interfaceID` and `_interfaceID` is not 0xffffffff, `false` otherwise\"}}},\"title\":\"ERC165 Interface\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"supportsInterface(bytes4)\":{\"notice\":\"queries if a contract supports an interface\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/IERC165.sol\":\"IERC165\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/IERC165.sol\":{\"keccak256\":\"0x43741d829c2e42a674e010542cdecaf2007b521d684ae0918d5e52753c259bc9\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://f4565f2e0af34e3c2cc0fa2097a47937cb7fff563c8c352e14d84177a5514424\",\"dweb:/ipfs/QmZnW78GyEaVeGdnFSGkhWSqvp7hU4TYu6FGuT9h6D1hdU\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: GPL-3.0\n\npragma solidity ^0.8.0;\n\n/**\n * @title ERC165 Interface\n */\ninterface IERC165 {\n    /**\n     * @notice queries if a contract supports an interface\n     * @dev Interface identification is specified in ERC-165. This function uses less than 30,000 gas.\n     * @param _interfaceID Interface identifier as specified in ERC-165\n     * @return `true` if the contract implements `_interfaceID` and `_interfaceID` is not 0xffffffff, `false` otherwise\n     */\n    function supportsInterface(bytes4 _interfaceID) external view returns (bool);\n}",
+  "sourcePath": "/Users/josh/Bytangle/Practice/Web3.0 & dApps/contracts/josh-nft/josh-nft-contract/contracts/IERC165.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/IERC165.sol",
+    "exportedSymbols": {
+      "IERC165": [
+        87
+      ]
+    },
+    "id": 88,
+    "license": "GPL-3.0",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 77,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "37:23:2"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IERC165",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 78,
+          "nodeType": "StructuredDocumentation",
+          "src": "62:34:2",
+          "text": " @title ERC165 Interface"
+        },
+        "fullyImplemented": false,
+        "id": 87,
+        "linearizedBaseContracts": [
+          87
+        ],
+        "name": "IERC165",
+        "nameLocation": "107:7:2",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 79,
+              "nodeType": "StructuredDocumentation",
+              "src": "121:365:2",
+              "text": " @notice queries if a contract supports an interface\n @dev Interface identification is specified in ERC-165. This function uses less than 30,000 gas.\n @param _interfaceID Interface identifier as specified in ERC-165\n @return `true` if the contract implements `_interfaceID` and `_interfaceID` is not 0xffffffff, `false` otherwise"
+            },
+            "functionSelector": "01ffc9a7",
+            "id": 86,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportsInterface",
+            "nameLocation": "500:17:2",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 82,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 81,
+                  "mutability": "mutable",
+                  "name": "_interfaceID",
+                  "nameLocation": "525:12:2",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 86,
+                  "src": "518:19:2",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 80,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "518:6:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "517:21:2"
+            },
+            "returnParameters": {
+              "id": 85,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 84,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 86,
+                  "src": "562:4:2",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 83,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "562:4:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "561:6:2"
+            },
+            "scope": 87,
+            "src": "491:77:2",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 88,
+        "src": "97:473:2",
+        "usedErrors": []
+      }
+    ],
+    "src": "37:533:2"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.16+commit.07a7930e.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.9",
+  "updatedAt": "2022-08-30T10:55:29.874Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "supportsInterface(bytes4)": {
+        "details": "Interface identification is specified in ERC-165. This function uses less than 30,000 gas.",
+        "params": {
+          "_interfaceID": "Interface identifier as specified in ERC-165"
+        },
+        "returns": {
+          "_0": "`true` if the contract implements `_interfaceID` and `_interfaceID` is not 0xffffffff, `false` otherwise"
+        }
+      }
+    },
+    "title": "ERC165 Interface",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "supportsInterface(bytes4)": {
+        "notice": "queries if a contract supports an interface"
+      }
+    },
+    "version": 1
+  }
+}

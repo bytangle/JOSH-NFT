@@ -9,7 +9,7 @@ import "./IERC165.sol";
  * @dev Details can be found here: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
  * Note: the ERC-165 identifier for this interface is 0x80ac58cd.
  */
-interface IERC721 {
+interface IERC721 is IERC165 {
     /**
      * @dev This emits when the ownership of the NFT changes
      * Note: it should also emit on NFT creation and destruction
