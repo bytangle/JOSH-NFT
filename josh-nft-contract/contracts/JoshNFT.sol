@@ -45,10 +45,10 @@ contract JoshNFT is IERC721, ERC165 {
     error TokenDoesNotExist(string _msg);
 
     /**
-     * @dev used with revert for unauthorized transfers
+     * @dev used with revert for unauthorized transfers or access
      * @param _msg brief description
      */
-    error UnauthorizedTransfer(string _msg);
+    error Unauthorized(string _msg);
 
     /**
      * @dev checks if the address provided is a non-zero address
@@ -64,6 +64,16 @@ contract JoshNFT is IERC721, ERC165 {
     }
 
     /**
+     * @dev check if `_addr` is the owner of the token with `_tokenId` identifier
+     * @param _addr address to check ownership of token
+     * @param _tokenId the identifier of the NFT
+     */
+    modifier isTokenOwner(address _addr, uint256 _tokenId) {
+        if(tokenOwners_[_tokenId] == _addr) _;
+        else Unauthorized("You dont own this token");
+    }
+
+    /**
      * @dev checks if token with the provided ID exists
      * revert if token with the given id cannot be found else continue execution
      * @param _tokenId the given token identifier
@@ -72,7 +82,7 @@ contract JoshNFT is IERC721, ERC165 {
         if(tokenOwners_[_tokenId] != address(0)) {
             _;
         } else {
-            revert TokenDoesNotExist("No token with given ID: " + string(_tokenId));
+            revert TokenDoesNotExist("No token with given ID:");
         }
     }
 
@@ -91,7 +101,7 @@ contract JoshNFT is IERC721, ERC165 {
         ) {
             _;
         } else {
-            revert UnauthorizedTransfer("You do not have rights to perform this transfer");
+            revert Unauthorized("You do not have rights to perform this transfer");
         }
 
     }
@@ -132,7 +142,32 @@ contract JoshNFT is IERC721, ERC165 {
 
     function transferFrom(address _from, address _to, uint256 _tokenId) public payable 
         isOwnerOrApproved(_from, _tokenId) notZeroAddr(_to) {
-            
+            _clearApprovals(_from, _tokenId);
+
+    }
+
+    /**
+     * @notice clear the token approval for the given owner with `_owner` address
+     * @dev throws if `_owner` isn't the owner of the NFT
+     * @param _owner the owner's address
+     * @param _tokenId the identifier of the NFT
+     */
+    function _clearApprovals(address _owner, uint256 _tokenId) private isTokenOwner(_owner, _tokenId) {
+        if(tokenApprovals_[_tokenId] != address(0)) {
+            delete tokenApprovals_[_tokenId]; // reset to address(0)
+        }
+    }
+
+    /**
+     * @notice clear the token ownership
+     * @dev throws if `_owner1 isn't the owner of the NFT
+     * @param _owner the owner's address
+     * @param _tokenId the idenfitier of the NFT
+     */
+    function _removeTokenFrom(address _owner, uint256 _tokenId) private isTokenOwner(_owner, _tokenId) {
+        if(tokenOwners_[_tokenId] != address(0)) {
+            delete tokenOwners_[_tokenId]; // reset to address(0)
+        }
     }
 
     /**
