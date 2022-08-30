@@ -22,10 +22,10 @@ contract JoshNFT is IERC721, ERC165 {
     bytes4 private constant _INTERFACE_ID_ERC721 = 0x80ac58cd;
 
     /// @notice Each token identifier mapped to owner's address
-    mapping(uint256 => address) tokenOwners_;
+    mapping(uint256 => address) private _tokenOwners;
 
     /// @notice each token identifier mapped to approved address
-    mapping(uint256 => address) tokenApprovals_;
+    mapping(uint256 => address) private _tokenApprovals;
 
     /// @notice count number of tokens owned by a particular address
     mapping(address => uint256) private _ownedTokensCount;
@@ -70,7 +70,7 @@ contract JoshNFT is IERC721, ERC165 {
      * @param _tokenId the identifier of the NFT
      */
     modifier isTokenOwner(address _addr, uint256 _tokenId) {
-        if(tokenOwners_[_tokenId] == _addr) _;
+        if(_tokenOwners[_tokenId] == _addr) _;
         else revert Unauthorized("You dont own this token");
     }
 
@@ -80,7 +80,7 @@ contract JoshNFT is IERC721, ERC165 {
      * @param _tokenId the given token identifier
      */
     modifier tokenExists(uint256 _tokenId) {
-        if(tokenOwners_[_tokenId] != address(0)) {
+        if(_tokenOwners[_tokenId] != address(0)) {
             _;
         } else {
             revert TokenDoesNotExist("No token with given ID:");
@@ -93,7 +93,7 @@ contract JoshNFT is IERC721, ERC165 {
      * @param _tokenId the identifier of the NFT to be transferred
      */
     modifier isOwnerOrApproved(address _addr, uint256 _tokenId) {
-        address owner = tokenOwners_[_tokenId];
+        address owner = _tokenOwners[_tokenId];
 
         if(
             (_addr == owner) ||
@@ -128,7 +128,7 @@ contract JoshNFT is IERC721, ERC165 {
      * @return address of the NFT owner
      */
     function ownerOf(uint256 _tokenId) public view returns (address) {
-        address owner = tokenOwners_[_tokenId];
+        address owner = _tokenOwners[_tokenId];
 
         require(owner != address(0)); // address must not be the zero address
 
@@ -142,12 +142,12 @@ contract JoshNFT is IERC721, ERC165 {
      * @param _tokenId the NFT identifier
      */
     function approve(address _approved, uint256 _tokenId) public payable notZeroAddr(_approved) {
-        address owner = tokenOwners_[_tokenId];
+        address owner = _tokenOwners[_tokenId];
 
         require(_approved != owner); // owner can't be added as an approved address
         require(msg.sender == owner || isApprovedForAll(owner, msg.sender)); // only owner and operators can approve addresses
 
-        tokenApprovals_[_tokenId] = _approved;
+        _tokenApprovals[_tokenId] = _approved;
 
         emit Approval(owner, _approved, _tokenId); // emit event
     }
@@ -223,8 +223,8 @@ contract JoshNFT is IERC721, ERC165 {
      * @param _tokenId the idenfitier of the NFT
      */
     function _removeTokenFrom(address _owner, uint256 _tokenId) private isTokenOwner(_owner, _tokenId) {
-        if(tokenOwners_[_tokenId] != address(0)) {
-            delete tokenOwners_[_tokenId]; // reset to address(0)
+        if(_tokenOwners[_tokenId] != address(0)) {
+            delete _tokenOwners[_tokenId]; // reset to address(0)
             _ownedTokensCount[_owner] -= 1; // decrease number of tokens owned by owner
         }
     }
@@ -248,8 +248,8 @@ contract JoshNFT is IERC721, ERC165 {
      * @param _tokenId the identifier of the NFT
      */
     function _clearApprovals(address _owner, uint256 _tokenId) private isTokenOwner(_owner, _tokenId) {
-        if(tokenApprovals_[_tokenId] != address(0)) {
-            delete tokenApprovals_[_tokenId]; // reset to address(0)
+        if(_tokenApprovals[_tokenId] != address(0)) {
+            delete _tokenApprovals[_tokenId]; // reset to address(0)
         }
     }
 
@@ -259,8 +259,8 @@ contract JoshNFT is IERC721, ERC165 {
      * @param _tokenId NFT token identifier
      */
     function _addTokenTo(address _to, uint256 _tokenId) private notZeroAddr(_to) {
-        require(tokenOwners_[_tokenId] == address(0));
-        tokenOwners_[_tokenId] = _to;
+        require(_tokenOwners[_tokenId] == address(0));
+        _tokenOwners[_tokenId] = _to;
         _ownedTokensCount[_to] += 1; // this is checked which means it throws when it overflows or underflows
     }
 
@@ -299,7 +299,7 @@ contract JoshNFT is IERC721, ERC165 {
      * @return returns the approved address for the token with the given identifier
      */
     function getApproved(uint256 _tokenId) public view tokenExists(_tokenId) returns (address) {
-        return tokenApprovals_[_tokenId];
+        return _tokenApprovals[_tokenId];
     }
 
 }
