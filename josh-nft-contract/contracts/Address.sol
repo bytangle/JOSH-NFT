@@ -11,11 +11,11 @@ library Address {
      @param _self the address to check
      @return `true` if it is or `false` if it isn't
      */
-    isAContract(address _self) view returns (bool) {
+    function isAContract(address _self) internal view returns (bool) {
         uint256 size;
 
         assembly {
-            size := extcodesize(_self);
+            size := extcodesize(_self)
         }
 
         return size > 0;
