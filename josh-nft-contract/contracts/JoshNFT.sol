@@ -209,16 +209,11 @@ contract JoshNFT is IERC721, ERC165 {
             emit Transfer(_from, _to, _tokenId); // emit event
     }
 
-    /**
-     * @notice clear the token approval for the given owner with `_owner` address
-     * @dev throws if `_owner` isn't the owner of the NFT
-     * @param _owner the owner's address
-     * @param _tokenId the identifier of the NFT
-     */
-    function _clearApprovals(address _owner, uint256 _tokenId) private isTokenOwner(_owner, _tokenId) {
-        if(tokenApprovals_[_tokenId] != address(0)) {
-            delete tokenApprovals_[_tokenId]; // reset to address(0)
-        }
+    function _burn(address _owner, uint256 _tokenId) internal notZeroAddr(_owner) {
+        _clearApprovals(_owner, _tokenId);
+        _removeTokenFrom(_owner, _tokenId);
+
+        emit Transfer(_owner, address(0), _tokenId);
     }
 
     /**
@@ -231,6 +226,30 @@ contract JoshNFT is IERC721, ERC165 {
         if(tokenOwners_[_tokenId] != address(0)) {
             delete tokenOwners_[_tokenId]; // reset to address(0)
             _ownedTokensCount[_owner] -= 1; // decrease number of tokens owned by owner
+        }
+    }
+
+    /**
+     * @notice mint new NFTs
+     * @param _to owner's address
+     * @param _tokenId the unique iD of the NFT
+     */
+    function _mint(address _to, uint256 _tokenId) internal notZeroAddr(_to) {
+        _clearApprovals(_to, _tokenId);
+        _addTokenTo(_to, _tokenId);
+        
+        emit Transfer(address(0), _to, _tokenId); // emit
+    }
+
+    /**
+     * @notice clear the token approval for the given owner with `_owner` address
+     * @dev throws if `_owner` isn't the owner of the NFT
+     * @param _owner the owner's address
+     * @param _tokenId the identifier of the NFT
+     */
+    function _clearApprovals(address _owner, uint256 _tokenId) private isTokenOwner(_owner, _tokenId) {
+        if(tokenApprovals_[_tokenId] != address(0)) {
+            delete tokenApprovals_[_tokenId]; // reset to address(0)
         }
     }
 
