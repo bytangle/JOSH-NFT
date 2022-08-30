@@ -62,7 +62,7 @@ interface IERC721 {
      * @param _tokenId NFT to transfer
      * @param _data additional data if necessary with no specific format
      */
-    function safeTransfer(address _from, address _to, uint256 _tokenId, bytes memory _data) external payable;
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes memory _data) external payable;
 
     /**
      * @notice transfer NFT ownership between addresses

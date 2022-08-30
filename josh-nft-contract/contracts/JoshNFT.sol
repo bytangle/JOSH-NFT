@@ -12,7 +12,7 @@ import "./IERC721Receiver.sol";
  * @author Bytangle
  * @dev this is an experimental implementation of an NFT collections contract
  */
-contract JoshNFT is IERC721, ERC165, IERC721Receiver {
+contract JoshNFT is IERC721, ERC165 {
     using Address for address;
 
     /// @notice Can also get this by calling `IERC721Receiver(0).onERC721Received.selector`
@@ -71,7 +71,7 @@ contract JoshNFT is IERC721, ERC165, IERC721Receiver {
      */
     modifier isTokenOwner(address _addr, uint256 _tokenId) {
         if(tokenOwners_[_tokenId] == _addr) _;
-        else Unauthorized("You dont own this token");
+        else revert Unauthorized("You dont own this token");
     }
 
     /**
@@ -135,20 +135,78 @@ contract JoshNFT is IERC721, ERC165, IERC721Receiver {
         return owner;
     }
 
-    function safeTransfer(address _from, address _to, uint256 _tokenId, bytes memory _data) 
+    /**
+     * @notice approve a particular address to access owner's NFT
+     * @dev throws if `msg.sender` isn't an operator or the owner of the NFT
+     * @param _approved address to be approved
+     * @param _tokenId the NFT identifier
+     */
+    function approve(address _approved, uint256 _tokenId) public payable notZeroAddr(_approved) {
+        address owner = tokenOwners_[_tokenId];
+
+        require(_approved != owner); // owner can't be added as an approved address
+        require(msg.sender == owner || isApprovedForAll(owner, msg.sender)); // only owner and operators can approve addresses
+
+        tokenApprovals_[_tokenId] = _approved;
+
+        emit Approval(owner, _approved, _tokenId); // emit event
+    }
+
+    /**
+     * @notice add an operator
+     * @dev throws if operator is a zero account
+     * @param _operator address to be added as an operator
+     * @param _approved boolean value to define whether the operator is approved or not
+     */
+    function setApprovalForAll(address _operator, bool _approved) public notZeroAddr(_operator) {
+        
+        require(_operator != msg.sender); // owner cannot be an operator
+        _operatorsApprovals[msg.sender][_operator] = _approved;
+
+        emit ApprovalForAll(msg.sender, _operator, _approved);
+    }
+
+    /**
+     * @notice safe transfer ownership of NFT
+     * @dev throws if `_from` isn't an approved address or if `_to` is a zero address
+     * @param _from initial owner's address
+     * @param _to new owner's address
+     * @param _tokenId NFT identifier
+     * @param _data optional data of any size or type
+     */
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes memory _data) 
         public notZeroAddr(_from) notZeroAddr(_to) payable {
-            transferFrom(_from, _to, _tokenId);
+            safeTransferFrom(_from, _to, _tokenId);
 
             require(_performSafeTransfer(_from, _to, _tokenId, _data));
     }
 
+    /**
+     * @notice safe transfer ownership of NFT
+     * @dev throws if `_from` isn't an approved address or if `_to` is a zero address
+     * @param _from initial owner's address
+     * @param _to new owner's address
+     * @param _tokenId NFT identifier
+     */
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) 
+        public notZeroAddr(_from) notZeroAddr(_to) payable {
+            transferFrom(_from, _to, _tokenId);
+    }
+
+    /**
+     * @notice transfer ownership of NFT
+     * @dev throws if `_from` isn't an approved address or if `_to` is a zero address
+     * @param _from initial owner's address
+     * @param _to new owner's address
+     * @param _tokenId NFT identifier
+     */
     function transferFrom(address _from, address _to, uint256 _tokenId) public payable 
         isOwnerOrApproved(_from, _tokenId) notZeroAddr(_to) {
             _clearApprovals(_from, _tokenId); // clear approvals
             _removeTokenFrom(_from, _tokenId); // clear ownership
             _addTokenTo(_to, _tokenId); // update ownership
 
-            Transfer(_from, _to, _tokenId);
+            emit Transfer(_from, _to, _tokenId); // emit event
     }
 
     /**
